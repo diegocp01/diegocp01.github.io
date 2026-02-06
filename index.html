@@ -1,9 +1,248 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perceptron Learning Visualizer</title>
+</head>
 <body>
-  <h1>Ai Revolution</h1>
-  <p>Welcome to the best chatbots!</p>
-  <img src="https://content.codecademy.com/articles/github-pages-via-web-app/happy-ice-cream.gif" />
-</body>
+<div style="font-family: Arial; max-width: 900px; margin:auto;">
+  <h3 style="margin:6px 0;">Perceptron Learning (Forward + Backward, with moving signals)</h3>
 
+  <!-- TOP: VISUAL -->
+  <svg id="net" width="900" height="300" style="background:#0b0f14; border-radius:12px; display:block;">
+    <defs>
+      <marker id="arrow" markerWidth="12" markerHeight="12" refX="7" refY="6" orient="auto">
+        <path d="M0,0 L0,12 L12,6 z" fill="#7a8795"></path>
+      </marker>
+      <marker id="arrowBack" markerWidth="12" markerHeight="12" refX="7" refY="6" orient="auto">
+        <path d="M12,0 L12,12 L0,6 z" fill="#ff4d7d"></path>
+      </marker>
+    </defs>
+
+    <!-- Nodes -->
+    <circle cx="110" cy="95" r="26" fill="#2ecc71"></circle>
+    <text x="110" y="100" text-anchor="middle" fill="#08110a" font-weight="700">x₁</text>
+
+    <circle cx="110" cy="225" r="26" fill="#2ecc71"></circle>
+    <text x="110" y="230" text-anchor="middle" fill="#08110a" font-weight="700">x₂</text>
+
+    <circle id="neuron" cx="450" cy="160" r="46" fill="#2b7cff"></circle>
+    <text x="450" y="165" text-anchor="middle" fill="white" font-weight="700">Σ</text>
+
+    <circle cx="800" cy="160" r="32" fill="#ffb020"></circle>
+    <text x="800" y="165" text-anchor="middle" fill="#231600" font-weight="800">ŷ</text>
+
+    <!-- Labels -->
+    <text id="x1Text" x="110" y="55" text-anchor="middle" fill="#cfe7d9" font-size="13">x₁ = 2</text>
+    <text id="x2Text" x="110" y="285" text-anchor="middle" fill="#cfe7d9" font-size="13">x₂ = 5</text>
+
+    <!-- Edges -->
+    <line id="e1" x1="136" y1="95"  x2="404" y2="140" stroke="#7a8795" stroke-width="4" marker-end="url(#arrow)"></line>
+    <line id="e2" x1="136" y1="225" x2="404" y2="180" stroke="#7a8795" stroke-width="4" marker-end="url(#arrow)"></line>
+    <line id="e3" x1="496" y1="160" x2="766" y2="160" stroke="#7a8795" stroke-width="4" marker-end="url(#arrow)"></line>
+
+    <!-- Weight text -->
+    <text id="w1Text" x="270" y="104" fill="#d6dde5" font-size="13">w₁ = 0.50</text>
+    <text id="w2Text" x="270" y="220" fill="#d6dde5" font-size="13">w₂ = -0.40</text>
+    <text id="bText"  x="450" y="238" text-anchor="middle" fill="#d6dde5" font-size="13">b = 0.10</text>
+
+    <!-- Dynamic results -->
+    <text id="sumText"  x="450" y="28"  text-anchor="middle" fill="#d6dde5" font-size="13">sum = (w₁x₁ + w₂x₂ + b)</text>
+    <text id="yhatText" x="800" y="225" text-anchor="middle" fill="#ffe3b5" font-size="13">ŷ = ?</text>
+
+    <!-- Legend -->
+    <rect x="18" y="14" width="14" height="14" fill="#2b7cff" rx="3"></rect>
+    <text x="40" y="26" fill="#d6dde5" font-size="12">forward signal</text>
+    <rect x="150" y="14" width="14" height="14" fill="#ff4d7d" rx="3"></rect>
+    <text x="172" y="26" fill="#d6dde5" font-size="12">backward error</text>
+  </svg>
+
+  <!-- BOTTOM: CONTROLS + TERMINAL -->
+  <div style="margin-top:12px; background:#0b0f14; border-radius:12px; padding:12px; color:#d6dde5;">
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="runForward()" style="padding:8px 12px; border-radius:10px; border:0; background:#2b7cff; color:white; font-weight:700; cursor:pointer;">▶ Forward</button>
+      <button onclick="runBackward()" style="padding:8px 12px; border-radius:10px; border:0; background:#ff4d7d; color:white; font-weight:700; cursor:pointer;">◀ Backprop</button>
+      <button onclick="runStep()" style="padding:8px 12px; border-radius:10px; border:0; background:#27ae60; color:white; font-weight:700; cursor:pointer;">⟳ Train step</button>
+      <button onclick="resetAll()" style="padding:8px 12px; border-radius:10px; border:0; background:#2a2f36; color:#d6dde5; font-weight:700; cursor:pointer;">Reset</button>
+    </div>
+
+    <div style="margin-top:10px; display:grid; grid-template-columns: 1fr 1fr; gap:8px; font-size:13px;">
+      <div><b>Target</b> y = <span id="targetText">1850</span></div>
+      <div><b>ŷ</b> = <span id="yhatMini">?</span></div>
+      <div><b>Error</b> (ŷ - y) = <span id="errMini">?</span></div>
+      <div style="opacity:0.95;"><b>w₁ update</b>: <span id="dw1Mini">?</span></div>
+      <div style="opacity:0.95;"><b>w₂ update</b>: <span id="dw2Mini">?</span></div>
+      <div style="opacity:0.95;"><b>b update</b>: <span id="dbMini">?</span></div>
+    </div>
+
+    <pre id="log" style="margin-top:10px; background:#05070a; color:#9fffb2; padding:12px; border-radius:10px; height:140px; overflow:auto; font-size:12px;"></pre>
+  </div>
+</div>
+
+<script>
+  // ====== Model (simple perceptron / linear neuron) ======
+  let w1 = 0.5, w2 = -0.4, b = 0.1;
+  const x1 = 2, x2 = 5;
+  const y = 1850;
+  const lr = 0.001;
+
+  const neuron = document.getElementById("neuron");
+  const logEl  = document.getElementById("log");
+
+  function fmt(n){ return (Math.round(n*100)/100).toFixed(2); }
+
+  function flashWeight(elementId) {
+    const el = document.getElementById(elementId);
+    el.setAttribute("fill", "#2ecc71");
+    setTimeout(() => el.setAttribute("fill", "#d6dde5"), 500);
+  }
+
+  function updateUI(yhat=null, error=null, dW1=null, dW2=null, dB=null){
+    document.getElementById("w1Text").textContent = `w₁ = ${fmt(w1)}`;
+    document.getElementById("w2Text").textContent = `w₂ = ${fmt(w2)}`;
+    document.getElementById("bText").textContent  = `b = ${fmt(b)}`;
+    document.getElementById("x1Text").textContent = `x₁ = ${x1}`;
+    document.getElementById("x2Text").textContent = `x₂ = ${x2}`;
+
+    if (yhat !== null){
+      document.getElementById("yhatText").textContent = `ŷ = ${fmt(yhat)}`;
+      document.getElementById("yhatMini").textContent = fmt(yhat);
+      document.getElementById("sumText").textContent  = `sum = ${fmt(yhat)} (before activation)`;
+    }
+    if (error !== null) document.getElementById("errMini").textContent = fmt(error);
+    if (dW1 !== null) document.getElementById("dw1Mini").textContent = fmt(dW1);
+    if (dW2 !== null) document.getElementById("dw2Mini").textContent = fmt(dW2);
+    if (dB  !== null) document.getElementById("dbMini").textContent  = fmt(dB);
+    document.getElementById("targetText").textContent = y;
+  }
+
+  function log(msg){
+    logEl.textContent += msg + "\n";
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  // ====== Animation helpers ======
+  function makeDot(color){
+    const svg = document.getElementById("net");
+    const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    dot.setAttribute("r", "6");
+    dot.setAttribute("fill", color);
+    dot.setAttribute("opacity", "0.95");
+    svg.appendChild(dot);
+    return dot;
+  }
+
+  function animateAlong(dot, x1, y1, x2, y2, ms=650){
+    return new Promise(resolve => {
+      const start = performance.now();
+      function step(t){
+        const p = Math.min(1, (t - start) / ms);
+        dot.setAttribute("cx", x1 + (x2 - x1) * p);
+        dot.setAttribute("cy", y1 + (y2 - y1) * p);
+        if (p < 1) requestAnimationFrame(step);
+        else resolve();
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  function pulse(node, color, ms=300){
+    const old = node.getAttribute("fill");
+    node.setAttribute("fill", color);
+    setTimeout(() => node.setAttribute("fill", old), ms);
+  }
+
+  function forwardCompute(){
+    return (w1*x1 + w2*x2 + b);
+  }
+
+  // ====== Core steps ======
+  async function runForward(){
+    const dotA = makeDot("#2b7cff");
+    const dotB = makeDot("#2b7cff");
+    const dotC = makeDot("#2b7cff");
+
+    const p1 = animateAlong(dotA, 136, 95, 404, 140, 650);
+    const p2 = animateAlong(dotB, 136, 225, 404, 180, 650);
+
+    pulse(neuron, "#3b8bff", 450);
+    await Promise.all([p1, p2]);
+
+    pulse(neuron, "#2b7cff", 350);
+    await animateAlong(dotC, 496, 160, 766, 160, 650);
+
+    dotA.remove(); dotB.remove(); dotC.remove();
+
+    const yhat = forwardCompute();
+    updateUI(yhat, null, null, null, null);
+    log(`FORWARD: x flows → neuron → ŷ = ${fmt(yhat)}`);
+    return yhat;
+  }
+
+  async function runBackward(applyUpdates = true){
+    const yhat  = forwardCompute();
+    const error = yhat - y;
+
+    const dotOut = makeDot("#ff4d7d");
+    const dotUp1 = makeDot("#ff4d7d");
+    const dotUp2 = makeDot("#ff4d7d");
+
+    await animateAlong(dotOut, 766, 160, 496, 160, 650);
+    pulse(neuron, "#ff4d7d", 450);
+
+    const p1 = animateAlong(dotUp1, 404, 140, 136, 95, 650);
+    const p2 = animateAlong(dotUp2, 404, 180, 136, 225, 650);
+    await Promise.all([p1, p2]);
+
+    dotOut.remove(); dotUp1.remove(); dotUp2.remove();
+
+    const dW1 = lr * error * x1;
+    const dW2 = lr * error * x2;
+    const dB  = lr * error;
+
+    updateUI(yhat, error, dW1, dW2, dB);
+    log(`BACKWARD: error flows back. error = ${fmt(error)}`);
+    log(`Gradients: Δw₁=${fmt(dW1)}, Δw₂=${fmt(dW2)}, Δb=${fmt(dB)}`);
+
+    if (applyUpdates) {
+      w1 -= dW1;
+      w2 -= dW2;
+      b  -= dB;
+
+      // Flash the weight labels to show they changed
+      flashWeight("w1Text");
+      flashWeight("w2Text");
+      flashWeight("bText");
+
+      updateUI(forwardCompute(), (forwardCompute() - y), dW1, dW2, dB);
+      log(`APPLIED: w₁=${fmt(w1)}, w₂=${fmt(w2)}, b=${fmt(b)}`);
+    }
+
+    return { yhat, error, dW1, dW2, dB };
+  }
+
+  async function runStep(){
+    await runForward();
+    await runBackward(true);
+    pulse(neuron, "#27ae60", 450);
+  }
+
+  function resetAll(){
+    w1 = 0.5; w2 = -0.4; b = 0.1;
+    logEl.textContent = "";
+    updateUI(null, null, null, null, null);
+    document.getElementById("yhatText").textContent = "ŷ = ?";
+    document.getElementById("yhatMini").textContent = "?";
+    document.getElementById("errMini").textContent  = "?";
+    document.getElementById("dw1Mini").textContent  = "?";
+    document.getElementById("dw2Mini").textContent  = "?";
+    document.getElementById("dbMini").textContent   = "?";
+    document.getElementById("sumText").textContent  = "sum = (w₁x₁ + w₂x₂ + b)";
+  }
+
+  resetAll();
+  log("Tip: click Forward to see the prediction, then Backprop to update weights.");
+</script>
+</body>
 </html>
