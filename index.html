@@ -7,75 +7,74 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',-apple-system,system-ui,sans-serif;background:#0a0a1a;color:#ddd;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
-.header{text-align:center;margin-bottom:15px}
+.header{text-align:center;margin-bottom:18px}
 .header h1{font-size:2rem;background:linear-gradient(135deg,#667eea,#764ba2,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .header .sub{color:#556;font-size:.9rem;margin-top:4px}
-.steps-nav{display:flex;gap:5px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
-.sd{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.04);border:2px solid #222;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .3s;color:#444}
-.sd.active{background:linear-gradient(135deg,#667eea,#764ba2);border-color:#667eea;color:#fff;transform:scale(1.15);box-shadow:0 0 18px rgba(102,126,234,.45)}
-.sd.done{border-color:#667eea;color:#667eea;background:rgba(102,126,234,.08)}
-.mc{width:100%;max-width:880px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:32px 36px;min-height:460px}
+.steps-nav{display:flex;gap:6px;margin-bottom:20px}
+.sd{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.04);border:2px solid #222;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .3s;color:#444}
+.sd.active{background:linear-gradient(135deg,#667eea,#764ba2);border-color:#667eea;color:#fff;transform:scale(1.18);box-shadow:0 0 20px rgba(102,126,234,.5)}
+.sd.done{border-color:#667eea;color:#667eea;background:rgba(102,126,234,.1)}
+.mc{width:100%;max-width:900px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:34px 38px;min-height:480px}
 .sl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#667eea;margin-bottom:4px}
-.st{font-size:1.55rem;font-weight:700;color:#e8e8ff;margin-bottom:6px}
-.sd2{color:#777;font-size:.92rem;line-height:1.55;margin-bottom:28px;max-width:620px}
-.stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;animation:fi .45s ease}
-@keyframes fi{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.nav{display:flex;gap:12px;margin-top:20px}
-.btn{padding:11px 30px;border:none;border-radius:11px;font-size:.92rem;font-weight:600;cursor:pointer;transition:all .25s;font-family:inherit}
+.st{font-size:1.6rem;font-weight:700;color:#e8e8ff;margin-bottom:6px}
+.sd2{color:#777;font-size:.93rem;line-height:1.6;margin-bottom:28px;max-width:640px}
+.stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;animation:fi .45s ease}
+@keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.nav{display:flex;gap:12px;margin-top:22px}
+.btn{padding:12px 32px;border:none;border-radius:12px;font-size:.93rem;font-weight:600;cursor:pointer;transition:all .25s;font-family:inherit}
 .bb{background:rgba(255,255,255,.06);color:#777}.bb:hover{background:rgba(255,255,255,.1);color:#aaa}
 .bn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;box-shadow:0 4px 15px rgba(102,126,234,.3)}
 .bn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(102,126,234,.5)}
-.btn:disabled{opacity:.25;cursor:not-allowed;transform:none!important}
-.prompt-box{background:#10102a;border:1px solid #252548;border-radius:14px;padding:22px 28px;font-size:1.3rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 4px 30px rgba(0,0,0,.35)}
+.btn:disabled{opacity:.2;cursor:not-allowed;transform:none!important}
+.prompt-box{background:#10102a;border:1px solid #252548;border-radius:14px;padding:22px 28px;font-size:1.35rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 4px 30px rgba(0,0,0,.4)}
 .cursor{display:inline-block;width:2px;height:1.2em;background:#667eea;margin-left:1px;animation:cb 1s step-end infinite;vertical-align:text-bottom}
 @keyframes cb{0%,100%{opacity:1}50%{opacity:0}}
-.trow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.tok{display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transform:translateY(22px) scale(.88);transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+.trow{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.tok{display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;transform:translateY(22px) scale(.85);transition:all .5s cubic-bezier(.34,1.56,.64,1)}
 .tok.v{opacity:1;transform:translateY(0) scale(1)}
-.tt{padding:10px 18px;border-radius:10px;font-weight:700;font-size:1.08rem;color:#111}
+.tt{padding:10px 18px;border-radius:10px;font-weight:700;font-size:1.1rem;color:#111}
 .tid{font-size:.68rem;color:#555;font-family:'Courier New',monospace;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:4px}
-.eg{display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transform:translateY(18px);transition:all .5s ease}
-.eg.v{opacity:1;transform:translateY(0)}
-.vv{display:flex;gap:2px;align-items:flex-end;height:50px;padding:4px;background:rgba(255,255,255,.025);border-radius:6px}
+.vv{display:flex;gap:2px;align-items:flex-end;height:44px;padding:3px;background:rgba(255,255,255,.025);border-radius:6px}
 .vb{width:3px;border-radius:2px;transition:height .8s cubic-bezier(.34,1.56,.64,1)}
-.vl{font-size:.62rem;color:#445;font-family:'Courier New',monospace}
-.pb{display:inline-block;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(102,126,234,.18);color:#667eea;border:1px solid rgba(102,126,234,.25);opacity:0;transform:scale(0);transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.vl{font-size:.6rem;color:#445;font-family:'Courier New',monospace}
+.arr{color:#445;font-size:.85rem;opacity:0;transition:opacity .4s}.arr.v{opacity:1}
+.pb{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(102,126,234,.2);color:#667eea;border:1px solid rgba(102,126,234,.3);opacity:0;transform:scale(0);transition:all .4s cubic-bezier(.34,1.56,.64,1)}
 .pb.v{opacity:1;transform:scale(1)}
-.attn-path{fill:none;stroke-linecap:round;transition:stroke-dashoffset .9s ease}
-.ffn-c{display:flex;align-items:center;gap:18px;justify-content:center;flex-wrap:wrap}
-.ffn-box{background:linear-gradient(135deg,#16163a,#251a4a);border:2px solid #3a2a6e;border-radius:16px;padding:22px 28px;text-align:center}
-.ffn-box h3{color:#a78bfa;font-size:.88rem;margin-bottom:10px}
-.ffn-nodes{display:flex;gap:7px;justify-content:center}
-.fn{width:13px;height:13px;border-radius:50%;background:#a78bfa;animation:np 1.5s ease infinite}
+.ffn-box{background:linear-gradient(135deg,#16163a,#251a4a);border:2px solid #3a2a6e;border-radius:16px;padding:16px 24px;text-align:center}
+.ffn-box h3{color:#a78bfa;font-size:.85rem;margin-bottom:8px}
+.ffn-nodes{display:flex;gap:6px;justify-content:center}
+.fn{width:12px;height:12px;border-radius:50%;background:#a78bfa;animation:np 1.5s ease infinite}
 @keyframes np{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
-.fa{font-size:1.5rem;color:#444}
-.mb{width:55px;height:7px;border-radius:4px;opacity:0;transition:all .5s ease}
-.mb.v{opacity:1}
+.fa{font-size:1.2rem;color:#333}
 .ls{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;max-width:380px}
-.lb{width:100%;padding:13px 20px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;font-size:.82rem;font-weight:600;opacity:0;transform:translateX(-30px);transition:all .5s ease}
+.lb{width:100%;padding:12px 18px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;font-size:.8rem;font-weight:600;opacity:0;transform:translateX(-25px);transition:all .45s ease}
 .lb.v{opacity:1;transform:translateX(0)}
-.la{color:#333;font-size:1.1rem;opacity:0;transition:opacity .3s}.la.v{opacity:1}
-.pc{width:100%;max-width:480px}
-.pr{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.pw{width:75px;text-align:right;font-weight:600;font-size:.92rem}
-.pt{flex:1;height:30px;background:rgba(255,255,255,.035);border-radius:8px;overflow:hidden}
+.la{color:#333;font-size:1rem;opacity:0;transition:opacity .3s}.la.v{opacity:1}
+.pc{width:100%;max-width:500px}
+.pr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pw{width:80px;text-align:right;font-weight:600;font-size:.95rem}
+.pt{flex:1;height:32px;background:rgba(255,255,255,.035);border-radius:8px;overflow:hidden}
 .pf{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;font-size:.78rem;font-weight:700;color:#fff;width:0%;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
 .od{text-align:center}
-.op{font-size:1.3rem;color:#888;margin-bottom:12px}
-.ow{font-size:3.2rem;font-weight:800;background:linear-gradient(135deg,#f093fb,#f5576c,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gp 2s ease infinite}
+.op{font-size:1.3rem;color:#888;margin-bottom:14px}
+.ow{font-size:3.5rem;font-weight:800;background:linear-gradient(135deg,#f093fb,#f5576c,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gp 2s ease infinite}
 @keyframes gp{0%,100%{filter:drop-shadow(0 0 8px rgba(240,147,251,.3))}50%{filter:drop-shadow(0 0 30px rgba(240,147,251,.7))}}
 .of{font-size:1.15rem;margin-top:18px;padding:14px 24px;background:rgba(255,255,255,.04);border-radius:10px;border:1px solid rgba(255,255,255,.07)}
 .of .hl{color:#f093fb;font-weight:700}
 .ln{margin-top:18px;padding:12px 20px;background:rgba(102,126,234,.08);border:1px solid rgba(102,126,234,.15);border-radius:10px;font-size:.82rem;color:#889;text-align:center;max-width:520px}
 .ln strong{color:#667eea}
-.nums{font-size:.6rem;color:#556;font-family:'Courier New',monospace;margin-top:2px;max-width:80px;text-align:center;word-break:break-all}
-@media(max-width:600px){body{padding:10px}.mc{padding:20px 14px}.header h1{font-size:1.35rem}.st{font-size:1.2rem}.tt{padding:7px 11px;font-size:.88rem}.prompt-box{font-size:1rem;padding:15px 18px}.ow{font-size:2.2rem}.trow{gap:8px}}
+.nums{font-size:.58rem;color:#445;font-family:'Courier New',monospace;margin-top:2px;max-width:80px;text-align:center;word-break:break-all}
+.hint{margin-top:20px;font-size:.8rem;color:#556;opacity:0;transition:opacity .5s;text-align:center;max-width:500px}
+.hint.v{opacity:1}
+.hint strong{color:#aaa}
+.sep{width:60px;height:1px;background:rgba(255,255,255,.06);margin:20px auto}
+@media(max-width:600px){body{padding:10px}.mc{padding:20px 16px}.header h1{font-size:1.35rem}.st{font-size:1.2rem}.tt{padding:7px 12px;font-size:.88rem}.prompt-box{font-size:1rem;padding:14px 16px}.ow{font-size:2.4rem}.trow{gap:8px}}
 </style>
 </head>
 <body>
 <div class="header">
 <h1>🧠 How Large Language Models Work</h1>
-<p class="sub">A visual step-by-step simulation — click "Next" to begin</p>
+<p class="sub">A visual step-by-step simulation — click "Next" to walk through it</p>
 </div>
 <div class="steps-nav" id="sn"></div>
 <div class="mc" id="mc">
@@ -85,179 +84,117 @@ body{font-family:'Segoe UI',-apple-system,system-ui,sans-serif;background:#0a0a1
 <div class="stage" id="stage"></div>
 </div>
 <div class="nav">
-<button class="btn bb" id="bb" onclick="go(cs-1)">← Back</button>
-<button class="btn bn" id="bnEl" onclick="go(cs+1)">Next →</button>
+<button class="btn bb" id="bkBtn" onclick="go(cs-1)">← Back</button>
+<button class="btn bn" id="nxBtn" onclick="go(cs+1)">Next →</button>
 </div>
 <script>
-const T=[
-{t:'The',id:464,c:'#FF6B6B',cd:'#cc5555'},
-{t:'capital',id:3797,c:'#4ECDC4',cd:'#3ba89f'},
-{t:'of',id:286,c:'#45B7D1',cd:'#3590a8'},
-{t:'France',id:4942,c:'#96CEB4',cd:'#78a890'},
-{t:'is',id:374,c:'#FFEAA7',cd:'#ccbb85'}
+const TK=[
+{t:'The',id:464,c:'#FF6B6B'},
+{t:'capital',id:3797,c:'#4ECDC4'},
+{t:'of',id:286,c:'#45B7D1'},
+{t:'France',id:4942,c:'#96CEB4'},
+{t:'is',id:374,c:'#FFEAA7'}
 ];
 const PT="The capital of France is";
 const S=[
-{l:'Step 1 of 9',t:'📝 Your Prompt',d:'You type a question or instruction. This raw text is all the model receives.'},
-{l:'Step 2 of 9',t:'✂️ Tokenization',d:'The text is split into smaller pieces called "tokens" — roughly word-sized chunks. Each one gets a numeric ID from a ~50,000 word dictionary.'},
-{l:'Step 3 of 9',t:'🔢 Token Embeddings',d:'Each token ID is converted into a vector — a long list of numbers that captures its meaning in a way the model can process.'},
-{l:'Step 4 of 9',t:'📍 Positional Encoding',d:'Since all tokens are processed simultaneously (not left-to-right), position information is added so the model knows word order.'},
-{l:'Step 5 of 9',t:'🔗 Self-Attention',d:'The magic step! Each token looks at every other token to understand context. "To predict what comes next, which words should I focus on?"'},
-{l:'Step 6 of 9',t:'⚡ Feed-Forward Network',d:'Each token\'s information independently passes through a neural network layer, which transforms and enriches its representation.'},
-{l:'Step 7 of 9',t:'🔄 Through the Layers',d:'Self-Attention + Feed-Forward repeat through many stacked layers (GPT-4 has ~120!). Each layer builds deeper understanding.'},
-{l:'Step 8 of 9',t:'📊 Predict Next Token',d:'After all layers, the final representation is used to score every word in the vocabulary and produce probabilities.'},
-{l:'Step 9 of 9',t:'✨ The Output',d:'The highest-probability token is selected and returned as the answer!'}
+{l:'Step 1 of 5',t:'✂️ Tokenize the Prompt',d:'Your text is split into smaller pieces called "tokens." Each token gets a numeric ID and is converted into a vector — a long list of numbers that captures its meaning.'},
+{l:'Step 2 of 5',t:'🔗 Self-Attention',d:'Each token looks at every other token to understand context. "To predict what comes next, which words matter most?" Thicker lines = stronger attention.'},
+{l:'Step 3 of 5',t:'🔄 Through the Layers',d:'Self-Attention and a neural network repeat across many stacked layers (modern LLMs have ~100!). Each layer builds deeper understanding — from grammar to meaning to knowledge.'},
+{l:'Step 4 of 5',t:'📊 Predict the Next Word',d:'After all layers, the model scores every word in its ~50,000-word vocabulary and assigns a probability to each one.'},
+{l:'Step 5 of 5',t:'✨ The Output',d:'The highest-probability token is selected and returned as the answer!'}
 ];
 let cs=0,at=[];
-function init(){let n=document.getElementById('sn');n.innerHTML='';for(let i=0;i<S.length;i++){let d=document.createElement('div');d.className='sd';d.textContent=i+1;d.onclick=()=>go(i);n.appendChild(d)}go(0)}
+function init(){let n=document.getElementById('sn');for(let i=0;i<S.length;i++){let d=document.createElement('div');d.className='sd';d.textContent=i+1;d.onclick=()=>go(i);n.appendChild(d)}go(0)}
 function ud(){document.querySelectorAll('.sd').forEach((d,i)=>{d.className='sd';if(i===cs)d.classList.add('active');else if(i<cs)d.classList.add('done')})}
 function dl(fn,ms){let t=setTimeout(fn,ms);at.push(t);return t}
-function go(n){if(n<0||n>=S.length)return;at.forEach(t=>clearTimeout(t));at=[];cs=n;ud();let s=S[n];document.getElementById('sl').textContent=s.l;document.getElementById('stEl').textContent=s.t;document.getElementById('sd').textContent=s.d;let st=document.getElementById('stage');st.innerHTML='';st.style.animation='none';st.offsetHeight;st.style.animation='fi .4s ease';[rPrompt,rToken,rEmbed,rPos,rAttn,rFFN,rLayers,rPred,rOut][n](st);document.getElementById('bb').disabled=(n===0);document.getElementById('bnEl').disabled=(n===S.length-1);document.getElementById('bnEl').textContent=n===S.length-2?'See Result ✨':'Next →'}
+function go(n){if(n<0||n>=S.length)return;at.forEach(t=>clearTimeout(t));at=[];cs=n;ud();let s=S[n];document.getElementById('sl').textContent=s.l;document.getElementById('stEl').textContent=s.t;document.getElementById('sd').textContent=s.d;let st=document.getElementById('stage');st.innerHTML='';st.style.animation='none';st.offsetHeight;st.style.animation='fi .4s ease';[rTokenize,rAttn,rLayers,rPred,rOut][n](st);document.getElementById('bkBtn').disabled=(n===0);document.getElementById('nxBtn').disabled=(n===S.length-1);document.getElementById('nxBtn').textContent=n===S.length-2?'See Result ✨':'Next →'}
 function sr(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280}}
 
-function rPrompt(st){
-let b=document.createElement('div');b.className='prompt-box';
-b.innerHTML='<span style="font-size:1.5rem">💬</span><span id="tt"></span><span class="cursor"></span>';
-st.appendChild(b);
-let el=document.getElementById('tt'),i=0;
-function tc(){if(i<PT.length){el.textContent+=PT[i];i++;dl(tc,55+Math.random()*40)}}
-dl(tc,400);
-let hint=document.createElement('div');hint.style.cssText='margin-top:20px;font-size:.8rem;color:#445;opacity:0;transition:opacity .5s';
-hint.textContent='👆 This is just raw text — the model needs to convert it to numbers';
-st.appendChild(hint);dl(()=>hint.style.opacity='1',2200)
-}
-
-function rToken(st){
-let o=document.createElement('div');o.style.cssText='font-size:1.05rem;color:#667;margin-bottom:6px';o.textContent='"'+PT+'"';st.appendChild(o);
-let a=document.createElement('div');a.style.cssText='font-size:1.5rem;color:#333;margin:6px 0';a.textContent='⬇';st.appendChild(a);
+function rTokenize(st){
+let orig=document.createElement('div');orig.className='prompt-box';orig.innerHTML='<span style="font-size:1.4rem">💬</span><span>'+PT+'</span>';st.appendChild(orig);
+let a1=document.createElement('div');a1.className='arr';a1.style.cssText='font-size:1.3rem;margin:10px 0';a1.textContent='⬇';st.appendChild(a1);dl(()=>a1.classList.add('v'),300);
 let r=document.createElement('div');r.className='trow';st.appendChild(r);
-T.forEach((tk,i)=>{
+TK.forEach((tk,i)=>{
 let e=document.createElement('div');e.className='tok';
-e.innerHTML=`<div class="tt" style="background:${tk.c}">${tk.t}</div><div class="tid">ID: ${tk.id}</div>`;
-r.appendChild(e);dl(()=>e.classList.add('v'),300+i*200)
-});
-let note=document.createElement('div');note.style.cssText='margin-top:22px;font-size:.8rem;color:#556;opacity:0;transition:opacity .5s;text-align:center';
-note.innerHTML='Each piece of text becomes a <strong style="color:#aaa">token</strong> with a unique numeric ID';
-st.appendChild(note);dl(()=>note.style.opacity='1',1400)
-}
-
-function rEmbed(st){
-let r=document.createElement('div');r.className='trow';r.style.gap='18px';st.appendChild(r);
-T.forEach((tk,i)=>{
-let g=document.createElement('div');g.className='eg';
-let l=document.createElement('div');l.className='tt';l.style.cssText=`background:${tk.c};font-size:.85rem;padding:6px 12px`;l.textContent=tk.t;g.appendChild(l);
-let ar=document.createElement('div');ar.style.cssText='color:#445;font-size:.8rem';ar.textContent='↓';g.appendChild(ar);
+let top=document.createElement('div');top.className='tt';top.style.background=tk.c;top.textContent=tk.t;e.appendChild(top);
+let id=document.createElement('div');id.className='tid';id.textContent='ID: '+tk.id;e.appendChild(id);
+let a2=document.createElement('div');a2.className='arr';a2.textContent='↓';e.appendChild(a2);
 let bars=document.createElement('div');bars.className='vv';
 let rn=sr(tk.id),bels=[];
-for(let b=0;b<16;b++){let bar=document.createElement('div');bar.className='vb';bar.style.background=tk.c;bar.style.opacity=.35+rn()*.65;bar.style.height='0px';bar._th=(4+rn()*42)+'px';bars.appendChild(bar);bels.push(bar)}
-g.appendChild(bars);
-let nums=document.createElement('div');nums.className='nums';
-let rn2=sr(tk.id+1);nums.textContent='['+Array.from({length:4},()=>(rn2()*2-1).toFixed(2)).join(', ')+', ...]';
-g.appendChild(nums);
-let vl=document.createElement('div');vl.className='vl';vl.textContent='4,096 dims';g.appendChild(vl);
-r.appendChild(g);
-dl(()=>{g.classList.add('v');dl(()=>bels.forEach(b=>b.style.height=b._th),180)},180+i*160)
-})}
-
-function rPos(st){
-let r=document.createElement('div');r.className='trow';r.style.gap='15px';st.appendChild(r);
-T.forEach((tk,i)=>{
-let g=document.createElement('div');g.className='eg';g.style.cssText='opacity:1;transform:none';
-let badge=document.createElement('div');badge.className='pb';badge.textContent='pos '+(i+1);g.appendChild(badge);
-let l=document.createElement('div');l.className='tt';l.style.cssText=`background:${tk.c};font-size:.85rem;padding:6px 12px`;l.textContent=tk.t;g.appendChild(l);
-let plus=document.createElement('div');plus.style.cssText='color:#667eea;font-weight:700;font-size:.9rem;opacity:0;transition:opacity .4s';plus.textContent='+';g.appendChild(plus);
-let pv=document.createElement('div');pv.className='vv';pv.style.cssText='height:22px;opacity:0;transition:opacity .5s';
-let rn=sr(i*997+42);
-for(let b=0;b<16;b++){let bar=document.createElement('div');bar.className='vb';bar.style.background='#667eea';bar.style.opacity=.25+rn()*.6;bar.style.height=(2+rn()*18)+'px';pv.appendChild(bar)}
-g.appendChild(pv);
-let eq=document.createElement('div');eq.style.cssText='font-size:.6rem;color:#667eea;opacity:0;transition:opacity .5s;margin-top:2px';eq.textContent='meaning + order';g.appendChild(eq);
-r.appendChild(g);
-dl(()=>badge.classList.add('v'),300+i*150);
-dl(()=>{plus.style.opacity='1';pv.style.opacity='1';eq.style.opacity='1'},800+i*150)
+for(let b=0;b<14;b++){let bar=document.createElement('div');bar.className='vb';bar.style.background=tk.c;bar.style.opacity=.3+rn()*.7;bar.style.height='0px';bar._th=(3+rn()*38)+'px';bars.appendChild(bar);bels.push(bar)}
+e.appendChild(bars);
+let nums=document.createElement('div');nums.className='nums';let rn2=sr(tk.id+1);nums.textContent='['+Array.from({length:3},()=>(rn2()*2-1).toFixed(2)).join(', ')+' …]';e.appendChild(nums);
+let vl=document.createElement('div');vl.className='vl';vl.textContent='4,096-dim vector';e.appendChild(vl);
+let pb=document.createElement('div');pb.className='pb';pb.textContent='pos '+(i+1);e.appendChild(pb);
+r.appendChild(e);
+dl(()=>{e.classList.add('v');dl(()=>{a2.classList.add('v');bels.forEach(b=>b.style.height=b._th);dl(()=>pb.classList.add('v'),350)},250)},500+i*200)
 });
-let note=document.createElement('div');note.style.cssText='margin-top:20px;font-size:.8rem;color:#556;opacity:0;transition:opacity .5s;text-align:center';
-note.innerHTML='Without positions, "France of capital The is" would look identical to the model!';
-st.appendChild(note);dl(()=>note.style.opacity='1',1800)
+let hint=document.createElement('div');hint.className='hint';
+hint.innerHTML='Each word becomes a <strong>numeric vector</strong> (list of numbers) that encodes its meaning + position';
+st.appendChild(hint);dl(()=>hint.classList.add('v'),2100)
 }
 
 function rAttn(st){
-let c=document.createElement('div');c.style.cssText='width:100%;max-width:560px;position:relative';
+let wrap=document.createElement('div');wrap.style.cssText='width:100%;max-width:560px;position:relative';
 let svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-svg.setAttribute('viewBox','0 0 500 210');svg.style.cssText='width:100%;overflow:visible';
-let px=[50,150,250,350,450],ty=190;
-T.forEach((tk,i)=>{
+svg.setAttribute('viewBox','0 0 500 220');svg.style.cssText='width:100%;overflow:visible';
+let px=[50,150,250,350,450],ty=198;
+TK.forEach((tk,i)=>{
 let rc=document.createElementNS('http://www.w3.org/2000/svg','rect');
-rc.setAttribute('x',px[i]-32);rc.setAttribute('y',ty-17);rc.setAttribute('width',64);rc.setAttribute('height',28);rc.setAttribute('rx',7);rc.setAttribute('fill',tk.c);rc.setAttribute('opacity','.9');svg.appendChild(rc);
+rc.setAttribute('x',px[i]-34);rc.setAttribute('y',ty-18);rc.setAttribute('width',68);rc.setAttribute('height',30);rc.setAttribute('rx',8);rc.setAttribute('fill',tk.c);rc.setAttribute('opacity','.9');svg.appendChild(rc);
 let tx=document.createElementNS('http://www.w3.org/2000/svg','text');
-tx.setAttribute('x',px[i]);tx.setAttribute('y',ty);tx.setAttribute('text-anchor','middle');tx.setAttribute('fill','#111');tx.setAttribute('font-size','12');tx.setAttribute('font-weight','700');tx.setAttribute('font-family','Segoe UI,sans-serif');tx.textContent=tk.t;svg.appendChild(tx)
+tx.setAttribute('x',px[i]);tx.setAttribute('y',ty+1);tx.setAttribute('text-anchor','middle');tx.setAttribute('fill','#111');tx.setAttribute('font-size','12.5');tx.setAttribute('font-weight','700');tx.setAttribute('font-family','Segoe UI,sans-serif');tx.textContent=tk.t;svg.appendChild(tx)
 });
+let qlabel=document.createElementNS('http://www.w3.org/2000/svg','text');
+qlabel.setAttribute('x',px[4]);qlabel.setAttribute('y',ty+27);qlabel.setAttribute('text-anchor','middle');qlabel.setAttribute('fill','#FFEAA755');qlabel.setAttribute('font-size','9');qlabel.setAttribute('font-family','Segoe UI,sans-serif');qlabel.textContent='asking: "what comes next?"';svg.appendChild(qlabel);
 let arcs=[
-{f:4,t:3,w:.45,lbl:'very strong'},
-{f:4,t:1,w:.38,lbl:'strong'},
-{f:1,t:3,w:.22,lbl:''},
-{f:4,t:0,w:.12,lbl:''},
-{f:4,t:2,w:.06,lbl:''}
+{f:4,t:3,w:.48},{f:4,t:1,w:.38},{f:3,t:1,w:.18},{f:4,t:0,w:.1},{f:4,t:2,w:.06}
 ],paths=[];
-arcs.forEach((a)=>{
-let x1=px[a.f],x2=px[a.t],mx=(x1+x2)/2,ah=ty-25-(a.w*320);
+arcs.forEach(a=>{
+let x1=px[a.f],x2=px[a.t],mx=(x1+x2)/2,ah=ty-28-(a.w*300);
 let p=document.createElementNS('http://www.w3.org/2000/svg','path');
-p.setAttribute('d',`M ${x1} ${ty-20} Q ${mx} ${ah} ${x2} ${ty-20}`);
-p.setAttribute('fill','none');p.setAttribute('stroke',T[a.f].c);p.setAttribute('stroke-width',1+a.w*7);p.setAttribute('opacity',.25+a.w*.75);p.setAttribute('stroke-linecap','round');
-p.setAttribute('stroke-dasharray','600');p.setAttribute('stroke-dashoffset','600');
+p.setAttribute('d',`M${x1} ${ty-20} Q${mx} ${ah} ${x2} ${ty-20}`);
+p.setAttribute('fill','none');p.setAttribute('stroke',TK[a.t].c);p.setAttribute('stroke-width',1.5+a.w*8);p.setAttribute('opacity',.2+a.w*.8);p.setAttribute('stroke-linecap','round');
+let len=p.getTotalLength?500:500;p.setAttribute('stroke-dasharray',len);p.setAttribute('stroke-dashoffset',len);p.style.transition='stroke-dashoffset .9s ease';
 svg.appendChild(p);paths.push(p)
 });
-c.appendChild(svg);st.appendChild(c);
-let note=document.createElement('div');note.style.cssText='margin-top:14px;text-align:center;font-size:.85rem;color:#778;opacity:0;transition:opacity .5s;max-width:460px';
-note.innerHTML='💡 To predict the next word, <strong style="color:#FFEAA7">"is"</strong> pays most attention to <strong style="color:#96CEB4">"France"</strong> and <strong style="color:#4ECDC4">"capital"</strong> — that\'s how it knows the answer is about a capital city of France!';
+wrap.appendChild(svg);st.appendChild(wrap);
+let note=document.createElement('div');note.className='hint';
+note.innerHTML='💡 <strong style="color:#FFEAA7">"is"</strong> pays strongest attention to <strong style="color:#96CEB4">"France"</strong> and <strong style="color:#4ECDC4">"capital"</strong> — that\'s how it knows the answer is about a country\'s capital!';
 st.appendChild(note);
-let legend=document.createElement('div');legend.style.cssText='margin-top:10px;font-size:.7rem;color:#445;opacity:0;transition:opacity .5s';
-legend.textContent='↑ thicker line = stronger attention';
-st.appendChild(legend);
-paths.forEach((p,i)=>dl(()=>{p.style.strokeDashoffset='0'},350+i*220));
-dl(()=>{note.style.opacity='1';legend.style.opacity='1'},1600)
-}
-
-function rFFN(st){
-let c=document.createElement('div');c.className='ffn-c';
-let ic=document.createElement('div');ic.style.cssText='display:flex;flex-direction:column;gap:5px';
-T.forEach((tk,i)=>{let b=document.createElement('div');b.className='mb';b.style.background=tk.c;ic.appendChild(b);dl(()=>b.classList.add('v'),200+i*80)});
-let il=document.createElement('div');il.style.cssText='font-size:.65rem;color:#556;text-align:center;margin-top:3px';il.textContent='input vectors';ic.appendChild(il);
-c.appendChild(ic);
-let a1=document.createElement('div');a1.className='fa';a1.textContent='→';c.appendChild(a1);
-let box=document.createElement('div');box.className='ffn-box';
-box.innerHTML=`<h3>🧪 Neural Network</h3><div class="ffn-nodes">${Array(8).fill(0).map((_,i)=>`<div class="fn" style="animation-delay:${i*.18}s"></div>`).join('')}</div><div style="font-size:.65rem;color:#556;margin-top:10px">Transforms each token's info</div>`;
-c.appendChild(box);
-let a2=document.createElement('div');a2.className='fa';a2.textContent='→';c.appendChild(a2);
-let oc=document.createElement('div');oc.style.cssText='display:flex;flex-direction:column;gap:5px';
-T.forEach((tk,i)=>{let b=document.createElement('div');b.className='mb';b.style.background=`linear-gradient(90deg,${tk.cd},${tk.c})`;b.style.boxShadow=`0 0 8px ${tk.c}33`;oc.appendChild(b);dl(()=>b.classList.add('v'),700+i*80)});
-let ol=document.createElement('div');ol.style.cssText='font-size:.65rem;color:#556;text-align:center;margin-top:3px';ol.textContent='output vectors';oc.appendChild(ol);
-c.appendChild(oc);
-st.appendChild(c);
-let note=document.createElement('div');note.style.cssText='margin-top:22px;text-align:center;font-size:.82rem;color:#556;opacity:0;transition:opacity .5s;max-width:440px';
-note.innerHTML='🧪 This is where much of the model\'s <strong style="color:#a78bfa">learned knowledge</strong> is stored — facts, patterns, and associations';
-st.appendChild(note);dl(()=>note.style.opacity='1',1100)
+let legend=document.createElement('div');legend.style.cssText='margin-top:8px;font-size:.68rem;color:#445;opacity:0;transition:opacity .5s';
+legend.textContent='thicker line = stronger attention';st.appendChild(legend);
+paths.forEach((p,i)=>dl(()=>p.setAttribute('stroke-dashoffset','0'),350+i*220));
+dl(()=>{note.classList.add('v');legend.style.opacity='1'},1500)
 }
 
 function rLayers(st){
 let ls=document.createElement('div');ls.className='ls';
-let il=document.createElement('div');il.style.cssText='font-size:.78rem;color:#667;margin-bottom:4px;opacity:0;transition:opacity .5s';il.textContent='⬇ embeddings enter here';ls.appendChild(il);dl(()=>il.style.opacity='1',100);
+let il=document.createElement('div');il.style.cssText='font-size:.78rem;color:#667;margin-bottom:6px;opacity:0;transition:opacity .5s';il.textContent='⬇ token vectors enter here';ls.appendChild(il);dl(()=>il.style.opacity='1',100);
 let layers=[
-{n:'Layer 1',s:'Self-Attention → Feed-Forward',bg:'#121a35',bc:'#1e3a6e'},
-{n:'Layer 2',s:'Self-Attention → Feed-Forward',bg:'#121e30',bc:'#1e4a5e'},
-{n:'Layer 3',s:'Self-Attention → Feed-Forward',bg:'#14182e',bc:'#1e3a6a'},
-{n:'...',s:'',bg:'#0e0e22',bc:'#222'},
-{n:'Layer 96',s:'Self-Attention → Feed-Forward',bg:'#1e1230',bc:'#4a1e6e'}
+{n:'Layer 1',bg:'#101a38',bc:'#1e3a6e'},
+{n:'Layer 2',bg:'#10182e',bc:'#1e4a5e'},
+{n:'Layer 3',bg:'#121630',bc:'#1e3a6a'},
+{n:'...',bg:'#0e0e22',bc:'#222'},
+{n:'Layer 96',bg:'#1e1230',bc:'#4a1e6e'}
 ];
 layers.forEach((ly,i)=>{
-if(i>0){let ar=document.createElement('div');ar.className='la';ar.textContent='⬇';ls.appendChild(ar);dl(()=>ar.classList.add('v'),200+i*260)}
-let b=document.createElement('div');b.className='lb';b.style.background=ly.bg;b.style.border=`1px solid ${ly.bc}`;
-if(ly.n==='...'){b.style.cssText+=';text-align:center;justify-content:center;color:#445;font-style:italic';b.innerHTML='<span>… dozens more layers …</span>'}
-else b.innerHTML=`<span style="color:#ccc">${ly.n}</span><span style="font-size:.72rem;color:#556">${ly.s}</span>`;
-ls.appendChild(b);dl(()=>b.classList.add('v'),300+i*260)
+if(i>0){let ar=document.createElement('div');ar.className='la';ar.textContent='⬇';ls.appendChild(ar);dl(()=>ar.classList.add('v'),200+i*250)}
+let b=document.createElement('div');b.className='lb';b.style.background=ly.bg;b.style.border='1px solid '+ly.bc;
+if(ly.n==='...'){b.style.cssText+='text-align:center;justify-content:center;color:#445;font-style:italic';b.innerHTML='<span>… dozens more layers …</span>'}
+else{
+let right='';
+if(i<3||i===4){right=`<span style="display:flex;gap:4px;align-items:center"><span style="font-size:.65rem;color:#667eea">Attention</span><span style="color:#333">→</span><span style="font-size:.65rem;color:#a78bfa">Neural Net</span></span>`}
+b.innerHTML=`<span style="color:#ccc">${ly.n}</span>${right}`
+}
+ls.appendChild(b);dl(()=>b.classList.add('v'),300+i*250)
 });
-let oa=document.createElement('div');oa.className='la';oa.textContent='⬇';ls.appendChild(oa);dl(()=>oa.classList.add('v'),300+layers.length*260);
-let ot=document.createElement('div');ot.style.cssText='font-size:.78rem;color:#a78bfa;margin-top:4px;opacity:0;transition:opacity .5s';ot.textContent='✦ Rich, context-aware representations emerge';ls.appendChild(ot);dl(()=>ot.style.opacity='1',500+layers.length*260);
-st.appendChild(ls)
+let oa=document.createElement('div');oa.className='la';oa.textContent='⬇';ls.appendChild(oa);dl(()=>oa.classList.add('v'),300+layers.length*250);
+let ot=document.createElement('div');ot.style.cssText='font-size:.82rem;color:#a78bfa;margin-top:6px;opacity:0;transition:opacity .5s;text-align:center';ot.textContent='✦ Deep, context-aware understanding emerges';ls.appendChild(ot);dl(()=>ot.style.opacity='1',500+layers.length*250);
+st.appendChild(ls);
+let hint=document.createElement('div');hint.className='hint';
+hint.innerHTML='Early layers learn grammar & syntax. Deeper layers learn <strong>facts, reasoning, and meaning</strong>.';
+st.appendChild(hint);dl(()=>hint.classList.add('v'),600+layers.length*250)
 }
 
 function rPred(st){
@@ -267,39 +204,38 @@ let preds=[
 {w:'Lyon',p:3,c:'#667eea',bg:'#667eea55'},
 {w:'Marseille',p:1.5,c:'#4a5a8a',bg:'#4a5a8a55'},
 {w:'Berlin',p:0.8,c:'#3a4a6a',bg:'#3a4a6a44'},
-{w:'the',p:0.5,c:'#3a4a6a',bg:'#3a4a6a33'},
-{w:null}
+{w:'the',p:0.5,c:'#334',bg:'#33333333'}
 ];
 preds.forEach((p,i)=>{
 let r=document.createElement('div');r.className='pr';
-if(!p.w){r.innerHTML='<span class="pw" style="color:#333;font-style:italic;font-size:.75rem">+49,995 more</span><div class="pt"><div class="pf"></div></div>';c.appendChild(r);return}
 let w=document.createElement('span');w.className='pw';w.style.color=p.c;w.textContent=p.w;r.appendChild(w);
 let t=document.createElement('div');t.className='pt';
 let f=document.createElement('div');f.className='pf';f.style.background=p.bg;f.style.color=i===0?'#fff':'#aaa';f.textContent=p.p+'%';t.appendChild(f);r.appendChild(t);
 c.appendChild(r);
-dl(()=>f.style.width=Math.max(p.p,3)+'%',400+i*160)
+dl(()=>f.style.width=Math.max(p.p,4)+'%',400+i*180)
 });
+let more=document.createElement('div');more.style.cssText='font-size:.7rem;color:#333;text-align:right;margin-top:2px;font-style:italic';more.textContent='+ ~49,995 other words with tiny probabilities…';c.appendChild(more);
 st.appendChild(c);
-let win=document.createElement('div');win.style.cssText='margin-top:16px;text-align:center;font-size:.92rem;color:#f093fb;opacity:0;transition:opacity .5s;font-weight:600';
+let win=document.createElement('div');win.style.cssText='margin-top:18px;text-align:center;font-size:1rem;color:#f093fb;opacity:0;transition:opacity .5s;font-weight:600';
 win.textContent='🏆 "Paris" wins with 92% confidence!';
-st.appendChild(win);dl(()=>win.style.opacity='1',1400)
+st.appendChild(win);dl(()=>win.style.opacity='1',1500)
 }
 
 function rOut(st){
-let d=document.createElement('div');d.className='od';d.style.cssText='opacity:0;transition:opacity .7s';
-let p=document.createElement('div');p.className='op';p.textContent='"The capital of France is..."';d.appendChild(p);
-let w=document.createElement('div');w.className='ow';w.textContent='Paris';w.style.cssText+='opacity:0;transform:scale(.4);transition:all .7s cubic-bezier(.34,1.56,.64,1)';d.appendChild(w);
+let d=document.createElement('div');d.className='od';d.style.cssText='opacity:0;transition:opacity .6s';
+let p=document.createElement('div');p.className='op';p.textContent='"The capital of France is…"';d.appendChild(p);
+let w=document.createElement('div');w.className='ow';w.textContent='Paris';w.style.cssText+='opacity:0;transform:scale(.3);transition:all .8s cubic-bezier(.34,1.56,.64,1)';d.appendChild(w);
 let f=document.createElement('div');f.className='of';f.innerHTML='The capital of France is <span class="hl">Paris</span>';f.style.cssText+='opacity:0;transition:opacity .5s';d.appendChild(f);
 let l=document.createElement('div');l.className='ln';
-l.innerHTML='🔄 To generate more words, <strong>the entire process repeats</strong> — "Paris" is appended to the input, and the model predicts the <em>next</em> next token, one at a time, until the response is complete.';
+l.innerHTML='🔄 To generate more text, <strong>the entire process repeats</strong> — "Paris" is appended to the input, and the model predicts the next token, one word at a time.';
 l.style.cssText+='opacity:0;transition:opacity .5s';d.appendChild(l);
-let restart=document.createElement('button');restart.className='btn bn';restart.style.cssText='margin-top:18px;opacity:0;transition:opacity .5s';restart.textContent='🔁 Watch Again';restart.onclick=()=>go(0);d.appendChild(restart);
+let restart=document.createElement('button');restart.className='btn bn';restart.style.cssText='margin-top:20px;opacity:0;transition:opacity .5s';restart.textContent='🔁 Watch Again';restart.onclick=()=>go(0);d.appendChild(restart);
 st.appendChild(d);
 dl(()=>d.style.opacity='1',100);
-dl(()=>{w.style.opacity='1';w.style.transform='scale(1)'},600);
-dl(()=>f.style.opacity='1',1300);
-dl(()=>l.style.opacity='1',1900);
-dl(()=>restart.style.opacity='1',2400)
+dl(()=>{w.style.opacity='1';w.style.transform='scale(1)'},650);
+dl(()=>f.style.opacity='1',1400);
+dl(()=>l.style.opacity='1',2000);
+dl(()=>restart.style.opacity='1',2600)
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cs+1);if(e.key==='ArrowLeft')go(cs-1)});
