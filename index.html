@@ -508,20 +508,6 @@ h1{
   line-height:1.45;
 }
 .embedding-info strong{color:var(--text)}
-.bars{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  gap:4px;
-  align-items:end;
-  height:86px;
-}
-.bar{
-  border-radius:5px 5px 2px 2px;
-  min-height:8px;
-  transform-origin:bottom;
-  animation:grow .75s cubic-bezier(.2,1,.3,1) both;
-}
-@keyframes grow{from{transform:scaleY(.05);opacity:.35}to{transform:scaleY(1);opacity:1}}
 .position-row{
   display:flex;
   align-items:center;
@@ -768,24 +754,6 @@ h1{
   color:#fff;
   font-weight:950;
 }
-.chat-input-demo{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  width:min(560px,100%);
-}
-.locked-prompt{
-  flex:1;
-  min-height:48px;
-  display:flex;
-  align-items:center;
-  border:1px solid rgba(87,103,132,.18);
-  border-radius:8px;
-  background:rgba(255,255,255,.88);
-  color:var(--text);
-  padding:0 14px;
-  font-weight:850;
-}
 .chat-note{
   margin:0;
   color:var(--muted);
@@ -818,7 +786,6 @@ h1{
   .fingerprints{grid-template-columns:1fr}
   .layer-stack{grid-template-columns:1fr}
   .layer-arrow{transform:rotate(90deg)}
-  .chat-input-demo{display:grid}
 }
 @media(max-width:700px){
   .page{width:min(calc(100% - 20px),1180px);padding-top:18px}
@@ -1089,10 +1056,14 @@ function renderReady(root,step){
   }
   if(step.name==="Loop"){
     root.innerHTML=`
-      <div class="run-panel">
-        <div class="chat-input-demo">
-          <div class="locked-prompt">Hey, how are you?</div>
-          <button class="run-btn" type="button" onclick="runCurrent()">Send</button>
+      <div class="prompt-demo">
+        <p class="prompt-question">What do you want to ask?</p>
+        <div class="chat-composer" aria-label="Locked ChatGPT prompt composer">
+          <div class="composer-plus" aria-hidden="true">+</div>
+          <div class="composer-text">Hey, how are you?</div>
+          <button class="send-circle" type="button" onclick="runCurrent()" aria-label="Send prompt">
+            <span>↑</span>
+          </button>
         </div>
         <p class="chat-note">The prompt is locked. Press Send to watch the model build the answer one word at a time.</p>
       </div>
@@ -1136,9 +1107,6 @@ function renderEmbeddings(root){
             <span class="position-stamp">place ${index+1}</span>
             <h4 style="color:${token.color}">${token.word}</h4>
             <div class="vector-line">[${makeVectorSample(token.id).join(", ")}, ...]</div>
-            <div class="bars">
-              ${makeBars(token.id,token.color)}
-            </div>
           </button>
         `).join("")}
       </div>
@@ -1168,18 +1136,6 @@ function makeVectorSample(seed){
     sample.push(((value/233280)*2-1).toFixed(2));
   }
   return sample;
-}
-
-function makeBars(seed,color){
-  let value=seed;
-  const heights=[];
-  for(let i=0;i<12;i++){
-    value=(value*9301+49297)%233280;
-    heights.push(18+Math.round((value/233280)*68));
-  }
-  return heights.map((height,index)=>`
-    <div class="bar" style="height:${height}px;background:${color};animation-delay:${index*.04}s"></div>
-  `).join("");
 }
 
 function renderTransformer(root){
