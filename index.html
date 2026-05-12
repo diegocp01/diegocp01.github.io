@@ -81,6 +81,35 @@ h1{
   max-width:720px;
   overflow-wrap:break-word;
 }
+.language-switch{
+  justify-self:end;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:5px;
+  border:1px solid rgba(87,103,132,.18);
+  border-radius:999px;
+  background:rgba(255,255,255,.86);
+  box-shadow:0 12px 30px rgba(36,54,89,.1);
+}
+.flag-btn{
+  width:42px;
+  height:36px;
+  border:1px solid transparent;
+  border-radius:999px;
+  background:transparent;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+.flag-btn:hover{transform:translateY(-1px);background:#eef4ff}
+.flag-btn.active{
+  border-color:rgba(47,111,237,.38);
+  background:rgba(47,111,237,.12);
+  box-shadow:inset 0 0 0 1px rgba(47,111,237,.08);
+}
 .sentence{
   display:flex;
   flex-wrap:wrap;
@@ -778,6 +807,7 @@ h1{
 }
 @media(max-width:920px){
   .hero{grid-template-columns:1fr}
+  .language-switch{justify-self:start}
   .workspace{grid-template-columns:1fr}
   .side{min-height:0}
   .stage-shell,.stage{min-height:520px}
@@ -817,6 +847,10 @@ h1{
       <h1 id="page-title">How ChatGPT writes an answer</h1>
       <p class="intro">ChatGPT writes one small piece at a time. It breaks your message into pieces, looks at which words matter, chooses the next word, and repeats until the answer is done.</p>
     </div>
+    <div class="language-switch" aria-label="Language">
+      <button class="flag-btn active" type="button" data-lang="en" aria-label="English">🇺🇸</button>
+      <button class="flag-btn" type="button" data-lang="es" aria-label="Español">🇪🇸</button>
+    </div>
   </section>
 
   <nav class="stepper" id="stepper" aria-label="ChatGPT explanation steps"></nav>
@@ -834,115 +868,161 @@ h1{
 </main>
 
 <script>
-const tokens=[
-  {word:"The",id:464,color:"#76d5c2",kind:"article",meaning:"This fingerprint marks the next thing as a specific thing we already mean, not just any capital."},
-  {word:"capital",id:3797,color:"#f6bd60",kind:"concept word",meaning:"This fingerprint leans toward ideas like city, government center, country, and location."},
-  {word:"of",id:286,color:"#7fb3ff",kind:"connector",meaning:"This fingerprint connects two ideas, telling the model that the capital belongs to something."},
-  {word:"France",id:4942,color:"#8fd17f",kind:"place name",meaning:"This fingerprint points strongly toward a country, Europe, French language, and facts about France."},
-  {word:"is",id:374,color:"#bda7f2",kind:"helper verb",meaning:"This fingerprint signals that the next word should probably complete a fact or answer."}
-];
-
-const attentionRelations=[
-  {
-    label:"mainly sets up that a specific thing is coming next.",
-    lines:[{to:1,w:6},{to:3,w:3},{to:4,w:2}]
+const appCopy={
+  en:{
+    documentTitle:"How ChatGPT Writes an Answer",
+    htmlLang:"en",
+    heroTitle:"How ChatGPT writes an answer",
+    heroIntro:"ChatGPT writes one small piece at a time. It breaks your message into pieces, looks at which words matter, chooses the next word, and repeats until the answer is done.",
+    languageLabel:"Language",
+    stepperLabel:"ChatGPT explanation steps",
+    previousStep:"Previous step",
+    nextStep:"Next step",
+    showLoop:"Show loop",
+    takeawayTitle:"Takeaway",
+    stepKicker:(index,total,name)=>`Step ${index} of ${total} · ${name}`,
+    showStepAria:(index,name)=>`Show step ${index}: ${name}`,
+    composerQuestion:"What do you want to ask?",
+    composerAria:"Locked ChatGPT prompt composer",
+    sendPromptAria:"Send prompt",
+    splitPrompt:"The capital of France is...",
+    splitBubble:"The capital of France is",
+    loopPrompt:"Hey, how are you?",
+    loopNote:"The prompt is locked. Press Send to watch the model build the answer one word at a time.",
+    tokenId:id=>`piece ID ${id}`,
+    place:index=>`place ${index}`,
+    fingerprintHeading:word=>`${word} fingerprint`,
+    fingerprintParagraph:token=>`<strong>${token.word}</strong> is behaving like a <strong>${token.kind}</strong>. ${token.meaning}`,
+    fingerprintNumbers:"The real list has <strong>4,096 numbers</strong>. The tiny bar code and sample values are just a visual peek at that long list.",
+    wordRelationshipAria:"Word relationship steps",
+    relationBlocks:[
+      ["1. Compare words","Draw lines between words that help explain each other."],
+      ["2. Keep strong clues","Thicker lines get more focus because they matter more."],
+      ["3. Blend the clues","Combine the useful hints into a better understanding."],
+      ["4. Sharpen context","Repeat the comparison so the next-word guess gets clearer."]
+    ],
+    focusAria:word=>`Focus word links on ${word}`,
+    attentionSvgAria:word=>`Word relation lines for ${word}`,
+    attentionHelp:"Click a word to change the word-link focus.",
+    attentionSubhelp:"Thicker line = stronger relationship.",
+    focusWordLabel:"focus word",
+    attentionLabel:(word,label)=>`<strong>${word}</strong>: ${label}`,
+    outputChoices:[
+      {word:"Paris",percent:92,color:"#ffb545"},
+      {word:"Lyon",percent:3,color:"#55a7ff"},
+      {word:"Marseille",percent:2,color:"#b685ff"},
+      {word:"Berlin",percent:1,color:"#28d7bd"},
+      {word:"the",percent:1,color:"#ff6f91"}
+    ],
+    outputWinner:"“Paris” is most likely, so the model adds it next.",
+    chatLoopAria:"Chat generation loop",
+    chatWaiting:"...",
+    loopGenerated:["Hi,","I'm","good.","How","are","you?"],
+    passContext:(index,context)=>`<strong>Pass ${index} context:</strong> ${context}`,
+    pipeSteps:["1 split words","2 word meaning","3 word links","4 next word"],
+    tokens:[
+      {word:"The",id:464,color:"#76d5c2",kind:"article",meaning:"This fingerprint marks the next thing as a specific thing we already mean, not just any capital."},
+      {word:"capital",id:3797,color:"#f6bd60",kind:"concept word",meaning:"This fingerprint leans toward ideas like city, government center, country, and location."},
+      {word:"of",id:286,color:"#7fb3ff",kind:"connector",meaning:"This fingerprint connects two ideas, telling the model that the capital belongs to something."},
+      {word:"France",id:4942,color:"#8fd17f",kind:"place name",meaning:"This fingerprint points strongly toward a country, Europe, French language, and facts about France."},
+      {word:"is",id:374,color:"#bda7f2",kind:"helper verb",meaning:"This fingerprint signals that the next word should probably complete a fact or answer."}
+    ],
+    attentionRelations:[
+      {label:"mainly sets up that a specific thing is coming next.",lines:[{to:1,w:6},{to:3,w:3},{to:4,w:2}]},
+      {label:"strongly connects to France because it needs a country or place to complete the idea.",lines:[{to:3,w:11},{to:2,w:6},{to:4,w:5},{to:0,w:3}]},
+      {label:"works like a bridge, linking capital to France.",lines:[{to:1,w:9},{to:3,w:9},{to:4,w:3}]},
+      {label:"connects back to capital and forward to is, setting up a factual answer.",lines:[{to:1,w:11},{to:4,w:7},{to:2,w:5},{to:0,w:2}]},
+      {label:"is the focus before predicting the next word, so it leans most on France and capital.",lines:[{to:3,w:12},{to:1,w:9},{to:2,w:5},{to:0,w:4}]}
+    ],
+    steps:[
+      {key:"split",name:"Split words",runLabel:"Send",ready:"Press Send to send this prompt to ChatGPT. Then we will show how it breaks the prompt into pieces.",title:"Start with your prompt to ChatGPT",plain:"A ChatGPT answer starts when you send a prompt. Here the prompt is locked so you can watch what happens after you press Send.",sideTitle:"What to notice",bullets:["The model sees pieces of text, not ideas yet.","Common words often become one piece.","Each piece gets an ID so the computer can look it up."],takeaway:"Plain text becomes labeled building blocks."},
+      {key:"meaning",name:"Word meaning",runLabel:"Make fingerprints",ready:"Press Make fingerprints to turn each piece ID into a colored meaning fingerprint.",title:"Turn each piece into a meaning fingerprint",plain:"Each piece ID points to a list of 4,096 numbers. You can picture that list as a colored fingerprint for meaning and position.",sideTitle:"Why this matters",bullets:["Each piece gets a long list of numbers. Here we show 8, then dots for the rest.","The position stamp is added to the piece, so order is part of the fingerprint.","Click a word tile to see what that fingerprint is roughly capturing."],takeaway:"Words become movable meaning patterns."},
+      {key:"links",name:"Word links",runLabel:"Show word links",ready:"Press Show word links to show which words matter most before the next guess.",title:"Let the words look at each other",plain:"This step asks: which earlier words matter most for the next one? Stronger connections get more weight.",sideTitle:"No math version",bullets:["“is” strongly points back to “France” and “capital.”","The model is building context, not just reading left to right.","Different passes can notice different relationships."],takeaway:"Context is made by comparing words with words."},
+      {key:"next",name:"Next word",runLabel:"Generate",ready:"Press Generate to reveal the possible next words and their percentages.",title:"Score possible next words",plain:"After the word-link step, the model gives many possible next words a score. The biggest score is the next guess.",sideTitle:"The choice",bullets:["The model does not search the web here.","It scores vocabulary options from its training.","For this sentence, “Paris” is the most likely next word."],takeaway:"The next word is a ranked guess."},
+      {key:"loop",name:"Loop",runLabel:"Send",ready:"Send this locked chat prompt to watch the same path repeat once for each new word.",title:"Each new word runs the same path again",plain:"That is how the AI keeps writing. It appends the word it just made, then reruns the same steps for the next word.",sideTitle:"Chat loop",bullets:["The prompt stays fixed: “Hey, how are you?”","Every generated word gets appended to the next pass.","A full answer is the same path repeated word by word."],takeaway:"Generation is a loop, not a single magic jump."}
+    ]
   },
-  {
-    label:"strongly connects to France because it needs a country or place to complete the idea.",
-    lines:[{to:3,w:11},{to:2,w:6},{to:4,w:5},{to:0,w:3}]
-  },
-  {
-    label:"works like a bridge, linking capital to France.",
-    lines:[{to:1,w:9},{to:3,w:9},{to:4,w:3}]
-  },
-  {
-    label:"connects back to capital and forward to is, setting up a factual answer.",
-    lines:[{to:1,w:11},{to:4,w:7},{to:2,w:5},{to:0,w:2}]
-  },
-  {
-    label:"is the focus before predicting the next word, so it leans most on France and capital.",
-    lines:[{to:3,w:12},{to:1,w:9},{to:2,w:5},{to:0,w:4}]
+  es:{
+    documentTitle:"Cómo ChatGPT escribe una respuesta",
+    htmlLang:"es",
+    heroTitle:"Cómo ChatGPT escribe una respuesta",
+    heroIntro:"ChatGPT escribe una parte pequeña a la vez. Divide tu mensaje en piezas, mira qué palabras importan, elige la siguiente palabra y repite hasta terminar la respuesta.",
+    languageLabel:"Idioma",
+    stepperLabel:"Pasos de la explicación de ChatGPT",
+    previousStep:"Paso anterior",
+    nextStep:"Siguiente paso",
+    showLoop:"Ver bucle",
+    takeawayTitle:"Idea clave",
+    stepKicker:(index,total,name)=>`Paso ${index} de ${total} · ${name}`,
+    showStepAria:(index,name)=>`Mostrar paso ${index}: ${name}`,
+    composerQuestion:"¿Qué quieres preguntar?",
+    composerAria:"Caja de prompt bloqueado para ChatGPT",
+    sendPromptAria:"Enviar prompt",
+    splitPrompt:"La capital de Francia es...",
+    splitBubble:"La capital de Francia es",
+    loopPrompt:"Hola, ¿cómo estás?",
+    loopNote:"El prompt está bloqueado. Presiona Enviar para ver cómo se construye la respuesta palabra por palabra.",
+    tokenId:id=>`ID de pieza ${id}`,
+    place:index=>`lugar ${index}`,
+    fingerprintHeading:word=>`Huella de ${word}`,
+    fingerprintParagraph:token=>`<strong>${token.word}</strong> se está comportando como <strong>${token.kind}</strong>. ${token.meaning}`,
+    fingerprintNumbers:"La lista real tiene <strong>4,096 números</strong>. Aquí solo ves unos valores de ejemplo y puntos para imaginar esa lista larga.",
+    wordRelationshipAria:"Pasos de relación entre palabras",
+    relationBlocks:[
+      ["1. Comparar palabras","Dibuja líneas entre palabras que se ayudan a explicar."],
+      ["2. Guardar pistas fuertes","Las líneas más gruesas reciben más atención porque importan más."],
+      ["3. Mezclar las pistas","Combina las pistas útiles para entender mejor la frase."],
+      ["4. Afinar el contexto","Repite la comparación para aclarar la siguiente palabra."]
+    ],
+    focusAria:word=>`Ver conexiones de ${word}`,
+    attentionSvgAria:word=>`Líneas de relación para ${word}`,
+    attentionHelp:"Haz clic en una palabra para cambiar el foco.",
+    attentionSubhelp:"Línea más gruesa = relación más fuerte.",
+    focusWordLabel:"palabra enfocada",
+    attentionLabel:(word,label)=>`<strong>${word}</strong>: ${label}`,
+    outputChoices:[
+      {word:"París",percent:92,color:"#ffb545"},
+      {word:"Lyon",percent:3,color:"#55a7ff"},
+      {word:"Marsella",percent:2,color:"#b685ff"},
+      {word:"Berlín",percent:1,color:"#28d7bd"},
+      {word:"la",percent:1,color:"#ff6f91"}
+    ],
+    outputWinner:"“París” es lo más probable, así que el modelo lo agrega después.",
+    chatLoopAria:"Bucle de generación del chat",
+    chatWaiting:"...",
+    loopGenerated:["Hola,","estoy","bien.","¿Y","tú?"],
+    passContext:(index,context)=>`<strong>Vuelta ${index}, contexto:</strong> ${context}`,
+    pipeSteps:["1 separar palabras","2 significado","3 conexiones","4 siguiente palabra"],
+    tokens:[
+      {word:"La",id:464,color:"#76d5c2",kind:"artículo",meaning:"Esta huella marca que hablamos de una cosa específica, no de cualquier capital."},
+      {word:"capital",id:3797,color:"#f6bd60",kind:"palabra de idea",meaning:"Esta huella apunta a ideas como ciudad, gobierno, país y ubicación."},
+      {word:"de",id:286,color:"#7fb3ff",kind:"conector",meaning:"Esta huella une dos ideas y dice que la capital pertenece a algo."},
+      {word:"Francia",id:4942,color:"#8fd17f",kind:"nombre de lugar",meaning:"Esta huella apunta fuerte a un país, Europa, idioma francés y datos sobre Francia."},
+      {word:"es",id:374,color:"#bda7f2",kind:"verbo de ayuda",meaning:"Esta huella avisa que la siguiente palabra probablemente completa un dato o una respuesta."}
+    ],
+    attentionRelations:[
+      {label:"prepara la frase para decir que viene una cosa específica.",lines:[{to:1,w:6},{to:3,w:3},{to:4,w:2}]},
+      {label:"se conecta fuerte con Francia porque necesita un país o lugar para completar la idea.",lines:[{to:3,w:11},{to:2,w:6},{to:4,w:5},{to:0,w:3}]},
+      {label:"funciona como puente entre capital y Francia.",lines:[{to:1,w:9},{to:3,w:9},{to:4,w:3}]},
+      {label:"mira hacia capital y hacia es, preparando una respuesta de dato.",lines:[{to:1,w:11},{to:4,w:7},{to:2,w:5},{to:0,w:2}]},
+      {label:"es el foco antes de adivinar la siguiente palabra, así que se apoya más en Francia y capital.",lines:[{to:3,w:12},{to:1,w:9},{to:2,w:5},{to:0,w:4}]}
+    ],
+    steps:[
+      {key:"split",name:"Separar palabras",runLabel:"Enviar",ready:"Presiona Enviar para mandar este prompt a ChatGPT. Después verás cómo lo separa en piezas.",title:"Empieza con tu prompt para ChatGPT",plain:"Una respuesta de ChatGPT empieza cuando envías un prompt. Aquí el prompt está bloqueado para que puedas ver qué pasa después de presionar Enviar.",sideTitle:"Qué mirar",bullets:["El modelo ve piezas de texto, todavía no ideas completas.","Las palabras comunes suelen quedar como una pieza.","Cada pieza recibe un ID para que la computadora pueda buscarla."],takeaway:"El texto normal se convierte en bloques con etiqueta."},
+      {key:"meaning",name:"Significado",runLabel:"Crear huellas",ready:"Presiona Crear huellas para convertir cada ID en una huella de significado con color.",title:"Convierte cada pieza en una huella de significado",plain:"Cada ID apunta a una lista de 4,096 números. Puedes imaginar esa lista como una huella de color con significado y lugar.",sideTitle:"Por qué importa",bullets:["Cada pieza recibe una lista larga de números. Aquí mostramos 8 y luego puntos.","El sello de lugar se agrega a la pieza, así que el orden también cuenta.","Haz clic en una tarjeta para ver qué captura esa huella."],takeaway:"Las palabras se vuelven patrones de significado que se pueden mover."},
+      {key:"links",name:"Conexiones",runLabel:"Mostrar conexiones",ready:"Presiona Mostrar conexiones para ver qué palabras pesan más antes de la siguiente respuesta.",title:"Deja que las palabras se miren entre sí",plain:"Este paso pregunta: ¿qué palabras anteriores importan más para la siguiente? Las conexiones fuertes pesan más.",sideTitle:"Versión sin matemáticas",bullets:["“es” apunta fuerte hacia “Francia” y “capital.”","El modelo construye contexto, no solo lee de izquierda a derecha.","Diferentes vueltas pueden notar relaciones distintas."],takeaway:"El contexto se crea comparando palabras con palabras."},
+      {key:"next",name:"Siguiente palabra",runLabel:"Generar",ready:"Presiona Generar para revelar posibles siguientes palabras y sus porcentajes.",title:"Puntúa posibles siguientes palabras",plain:"Después de conectar palabras, el modelo da un puntaje a muchas opciones. La opción con mayor puntaje es la siguiente apuesta.",sideTitle:"La elección",bullets:["El modelo no busca en internet aquí.","Puntúa opciones de vocabulario usando lo que aprendió al entrenarse.","Para esta frase, “París” es la siguiente palabra más probable."],takeaway:"La siguiente palabra es una apuesta ordenada por puntaje."},
+      {key:"loop",name:"Bucle",runLabel:"Enviar",ready:"Envía este prompt de chat bloqueado para ver cómo el mismo camino se repite con cada palabra nueva.",title:"Cada palabra nueva recorre el mismo camino",plain:"Así es como la IA sigue escribiendo. Agrega la palabra que acaba de crear y vuelve a correr los mismos pasos para la siguiente.",sideTitle:"Bucle del chat",bullets:["El prompt queda fijo: “Hola, ¿cómo estás?”","Cada palabra generada se agrega a la siguiente vuelta.","Una respuesta completa es el mismo camino repetido palabra por palabra."],takeaway:"Generar texto es un bucle, no un salto mágico."}
+    ]
   }
-];
+};
 
-const steps=[
-  {
-    name:"Split words",
-    runLabel:"Send",
-    ready:"Press Send to send this prompt to ChatGPT. Then we will show how it breaks the prompt into pieces.",
-    title:"Start with your prompt to ChatGPT",
-    plain:"A ChatGPT answer starts when you send a prompt. Here the prompt is locked so you can watch what happens after you press Send.",
-    sideTitle:"What to notice",
-    bullets:[
-      "The model sees pieces of text, not ideas yet.",
-      "Common words often become one piece.",
-      "Each piece gets an ID so the computer can look it up."
-    ],
-    takeaway:"Plain text becomes labeled building blocks.",
-    render:renderInput,
-  },
-  {
-    name:"Word meaning",
-    runLabel:"Make fingerprints",
-    ready:"Press Make fingerprints to turn each piece ID into a colored meaning fingerprint.",
-    title:"Turn each piece into a meaning fingerprint",
-    plain:"Each piece ID points to a list of 4,096 numbers. You can picture that list as a colored fingerprint for meaning and position.",
-    sideTitle:"Why this matters",
-    bullets:[
-      "Each piece gets a long list of numbers. Here we show 8, then dots for the rest.",
-      "The position stamp is added to the piece, so order is part of the fingerprint.",
-      "Click a word tile to see what that fingerprint is roughly capturing."
-    ],
-    takeaway:"Words become movable meaning patterns.",
-    render:renderEmbeddings,
-  },
-  {
-    name:"Word links",
-    runLabel:"Show word links",
-    ready:"Press Show word links to show which words matter most before the next guess.",
-    title:"Let the words look at each other",
-    plain:"This step asks: which earlier words matter most for the next one? Stronger connections get more weight.",
-    sideTitle:"No math version",
-    bullets:[
-      "“is” strongly points back to “France” and “capital.”",
-      "The model is building context, not just reading left to right.",
-      "Different passes can notice different relationships."
-    ],
-    takeaway:"Context is made by comparing words with words.",
-    render:renderTransformer,
-  },
-  {
-    name:"Next word",
-    runLabel:"Generate",
-    ready:"Press Generate to reveal the possible next words and their percentages.",
-    title:"Score possible next words",
-    plain:"After the word-link step, the model gives many possible next words a score. The biggest score is the next guess.",
-    sideTitle:"The choice",
-    bullets:[
-      "The model does not search the web here.",
-      "It scores vocabulary options from its training.",
-      "For this sentence, “Paris” is the most likely next word."
-    ],
-    takeaway:"The next word is a ranked guess.",
-    render:renderOutput,
-  },
-  {
-    name:"Loop",
-    runLabel:"Send",
-    ready:"Send this locked chat prompt to watch the same path repeat once for each new word.",
-    title:"Each new word runs the same path again",
-    plain:"That is how the AI keeps writing. It appends the word it just made, then reruns the same steps for the next word.",
-    sideTitle:"Chat loop",
-    bullets:[
-      "The prompt stays fixed: “Hey, how are you?”",
-      "Every generated word gets appended to the next pass.",
-      "A full answer is the same path repeated word by word."
-    ],
-    takeaway:"Generation is a loop, not a single magic jump.",
-    render:renderLoop,
-  }
-];
-
+const renderers={split:renderInput,meaning:renderEmbeddings,links:renderTransformer,next:renderOutput,loop:renderLoop};
+let lang="en";
+let ui=appCopy[lang];
+let tokens=ui.tokens;
+let attentionRelations=ui.attentionRelations;
+let steps=ui.steps;
 let current=0;
 let currentRan=false;
 let activeTimers=[];
@@ -951,16 +1031,14 @@ const stage=document.getElementById("stage");
 const side=document.getElementById("side");
 const mobilePrev=document.getElementById("mobilePrev");
 const mobileNext=document.getElementById("mobileNext");
+const pageTitle=document.getElementById("page-title");
+const intro=document.querySelector(".intro");
+const languageSwitch=document.querySelector(".language-switch");
+const languageButtons=document.querySelectorAll(".flag-btn");
 
 function init(){
-  steps.forEach((step,index)=>{
-    const button=document.createElement("button");
-    button.className="step-btn";
-    button.type="button";
-    button.setAttribute("aria-label",`Show step ${index+1}: ${step.name}`);
-    button.innerHTML=`<span class="step-number">${index+1}</span><span class="step-name">${step.name}</span>`;
-    button.addEventListener("click",()=>go(index));
-    stepper.appendChild(button);
+  languageButtons.forEach(button=>{
+    button.addEventListener("click",()=>setLanguage(button.dataset.lang));
   });
   mobilePrev.addEventListener("click",()=>go(current-1));
   mobileNext.addEventListener("click",()=>go(current+1));
@@ -968,7 +1046,49 @@ function init(){
     if(event.key==="ArrowRight"&&currentRan) go(current+1);
     if(event.key==="ArrowLeft") go(current-1);
   });
+  applyLanguage();
   go(0);
+}
+
+function setLanguage(nextLang){
+  if(!appCopy[nextLang]||nextLang===lang) return;
+  clearActiveTimers();
+  lang=nextLang;
+  ui=appCopy[lang];
+  tokens=ui.tokens;
+  attentionRelations=ui.attentionRelations;
+  steps=ui.steps;
+  applyLanguage();
+  go(current);
+}
+
+function applyLanguage(){
+  document.documentElement.lang=ui.htmlLang;
+  document.title=ui.documentTitle;
+  pageTitle.textContent=ui.heroTitle;
+  intro.textContent=ui.heroIntro;
+  languageSwitch.setAttribute("aria-label",ui.languageLabel);
+  stepper.setAttribute("aria-label",ui.stepperLabel);
+  mobilePrev.setAttribute("aria-label",ui.previousStep);
+  languageButtons.forEach(button=>{
+    const isActive=button.dataset.lang===lang;
+    button.classList.toggle("active",isActive);
+    button.setAttribute("aria-pressed",isActive?"true":"false");
+  });
+  buildStepper();
+}
+
+function buildStepper(){
+  stepper.innerHTML="";
+  steps.forEach((step,index)=>{
+    const button=document.createElement("button");
+    button.className="step-btn";
+    button.type="button";
+    button.setAttribute("aria-label",ui.showStepAria(index+1,step.name));
+    button.innerHTML=`<span class="step-number">${index+1}</span><span class="step-name">${step.name}</span>`;
+    button.addEventListener("click",()=>go(index));
+    stepper.appendChild(button);
+  });
 }
 
 function go(index){
@@ -984,13 +1104,13 @@ function go(index){
   stage.innerHTML=`
     <div class="stage-head">
       <div>
-        <div class="kicker">Step ${current+1} of 5 · ${step.name}</div>
+        <div class="kicker">${ui.stepKicker(current+1,steps.length,step.name)}</div>
         <h2 class="stage-title">${step.title}</h2>
         <p class="plain">${step.plain}</p>
       </div>
       <div class="controls">
-        <button class="icon-btn" type="button" aria-label="Previous step" ${current===0?"disabled":""} onclick="go(${current-1})">‹</button>
-        <button class="primary-btn" id="nextBtn" type="button" ${current===steps.length-1?"disabled":""} onclick="go(${current+1})">${current===steps.length-2?"Show loop":"Next step"}</button>
+        <button class="icon-btn" type="button" aria-label="${ui.previousStep}" ${current===0?"disabled":""} onclick="go(${current-1})">‹</button>
+        <button class="primary-btn" id="nextBtn" type="button" ${current===steps.length-1?"disabled":""} onclick="go(${current+1})">${current===steps.length-2?ui.showLoop:ui.nextStep}</button>
       </div>
     </div>
     <div class="visual" id="visual"></div>
@@ -1002,13 +1122,13 @@ function go(index){
       <ul>${step.bullets.map(item=>`<li>${item}</li>`).join("")}</ul>
     </div>
     <div class="takeaway">
-      <h2>Takeaway</h2>
+      <h2>${ui.takeawayTitle}</h2>
       <p><strong>${step.takeaway}</strong></p>
     </div>
   `;
   mobilePrev.disabled=current===0;
   mobileNext.disabled=true;
-  mobileNext.textContent=current===steps.length-2?"Show loop":"Next step";
+  mobileNext.textContent=current===steps.length-2?ui.showLoop:ui.nextStep;
   syncNextState();
 }
 
@@ -1016,7 +1136,7 @@ function runCurrent(){
   clearActiveTimers();
   const step=steps[current];
   currentRan=true;
-  step.render(document.getElementById("visual"));
+  renderers[step.key](document.getElementById("visual"));
   syncNextState();
 }
 
@@ -1039,14 +1159,14 @@ function syncNextState(){
 }
 
 function renderReady(root,step){
-  if(step.name==="Split words"){
+  if(step.key==="split"){
     root.innerHTML=`
       <div class="prompt-demo">
-        <p class="prompt-question">What do you want to ask?</p>
-        <div class="chat-composer" aria-label="Locked ChatGPT prompt composer">
+        <p class="prompt-question">${ui.composerQuestion}</p>
+        <div class="chat-composer" aria-label="${ui.composerAria}">
           <div class="composer-plus" aria-hidden="true">+</div>
-          <div class="composer-text">The capital of France is...</div>
-          <button class="send-circle" type="button" onclick="runCurrent()" aria-label="Send prompt">
+          <div class="composer-text">${ui.splitPrompt}</div>
+          <button class="send-circle" type="button" onclick="runCurrent()" aria-label="${ui.sendPromptAria}">
             <span>↑</span>
           </button>
         </div>
@@ -1054,25 +1174,25 @@ function renderReady(root,step){
     `;
     return;
   }
-  if(step.name==="Loop"){
+  if(step.key==="loop"){
     root.innerHTML=`
       <div class="prompt-demo">
-        <p class="prompt-question">What do you want to ask?</p>
-        <div class="chat-composer" aria-label="Locked ChatGPT prompt composer">
+        <p class="prompt-question">${ui.composerQuestion}</p>
+        <div class="chat-composer" aria-label="${ui.composerAria}">
           <div class="composer-plus" aria-hidden="true">+</div>
-          <div class="composer-text">Hey, how are you?</div>
-          <button class="send-circle" type="button" onclick="runCurrent()" aria-label="Send prompt">
+          <div class="composer-text">${ui.loopPrompt}</div>
+          <button class="send-circle" type="button" onclick="runCurrent()" aria-label="${ui.sendPromptAria}">
             <span>↑</span>
           </button>
         </div>
-        <p class="chat-note">The prompt is locked. Press Send to watch the model build the answer one word at a time.</p>
+        <p class="chat-note">${ui.loopNote}</p>
       </div>
     `;
     return;
   }
   root.innerHTML=`
     <div class="run-panel">
-      <div class="bubble">The capital of France is</div>
+      <div class="bubble">${ui.splitBubble}</div>
       <p>${step.ready}</p>
       <button class="run-btn" type="button" onclick="runCurrent()">${step.runLabel}</button>
     </div>
@@ -1083,13 +1203,13 @@ function renderInput(root){
   root.innerHTML=`
     <div class="flow-grid">
       <div class="input-strip">
-        <div class="bubble">The capital of France is</div>
+        <div class="bubble">${ui.splitBubble}</div>
         <div class="arrow">→</div>
         <div class="tokens">
           ${tokens.map((token,index)=>`
             <div class="token" style="animation-delay:${index*.12}s">
               <div class="token-word" style="background:${token.color}">${token.word}</div>
-              <div class="token-id">piece ID ${token.id}</div>
+              <div class="token-id">${ui.tokenId(token.id)}</div>
             </div>
           `).join("")}
         </div>
@@ -1104,7 +1224,7 @@ function renderEmbeddings(root){
       <div class="fingerprints">
         ${tokens.map((token,index)=>`
           <button class="fingerprint ${index===0?"active":""}" type="button" onclick="selectEmbedding(${index})" style="animation-delay:${index*.12}s">
-            <span class="position-stamp">place ${index+1}</span>
+            <span class="position-stamp">${ui.place(index+1)}</span>
             <h4 style="color:${token.color}">${token.word}</h4>
             <div class="vector-line">[${makeVectorSample(token.id).join(", ")}, ...]</div>
           </button>
@@ -1122,9 +1242,9 @@ function selectEmbedding(index){
   const info=document.getElementById("embeddingInfo");
   if(!info) return;
   info.innerHTML=`
-    <h4>${token.word} fingerprint</h4>
-    <p><strong>${token.word}</strong> is behaving like a <strong>${token.kind}</strong>. ${token.meaning}</p>
-    <p>The real list has <strong>4,096 numbers</strong>. The tiny bar code and sample values are just a visual peek at that long list.</p>
+    <h4>${ui.fingerprintHeading(token.word)}</h4>
+    <p>${ui.fingerprintParagraph(token)}</p>
+    <p>${ui.fingerprintNumbers}</p>
   `;
 }
 
@@ -1145,26 +1265,14 @@ function renderTransformer(root){
         <div id="attentionCanvas"></div>
         <div class="attention-label" id="attentionLabel"></div>
       </div>
-      <div class="block-chain" aria-label="Word relationship steps">
-        <div class="mini-block" style="animation-delay:.05s">
-          <strong>1. Compare words</strong>
-          <span>Draw lines between words that help explain each other.</span>
-        </div>
-        <div class="mini-down">↓</div>
-        <div class="mini-block" style="animation-delay:.15s">
-          <strong>2. Keep strong clues</strong>
-          <span>Thicker lines get more focus because they matter more.</span>
-        </div>
-        <div class="mini-down">↓</div>
-        <div class="mini-block" style="animation-delay:.25s">
-          <strong>3. Blend the clues</strong>
-          <span>Combine the useful hints into a better understanding.</span>
-        </div>
-        <div class="mini-down">↓</div>
-        <div class="mini-block" style="animation-delay:.35s">
-          <strong>4. Sharpen context</strong>
-          <span>Repeat the comparison so the next-word guess gets clearer.</span>
-        </div>
+      <div class="block-chain" aria-label="${ui.wordRelationshipAria}">
+        ${ui.relationBlocks.map((block,index)=>`
+          <div class="mini-block" style="animation-delay:${.05+index*.1}s">
+            <strong>${block[0]}</strong>
+            <span>${block[1]}</span>
+          </div>
+          ${index<ui.relationBlocks.length-1?'<div class="mini-down">↓</div>':""}
+        `).join("")}
       </div>
     </div>
   `;
@@ -1189,36 +1297,30 @@ function selectAttention(focusIndex){
   }).join("");
   const tokenNodes=tokens.map((token,index)=>{
     const x=xs[index];
-    const w=token.word==="capital"?132:token.word==="France"?118:88;
+    const w=token.word==="capital"?132:token.word==="France"||token.word==="Francia"?118:88;
     return `
-      <g class="attention-token ${index===focusIndex?"active":""}" role="button" tabindex="0" aria-label="Focus word links on ${token.word}" onclick="selectAttention(${index})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectAttention(${index})}">
+      <g class="attention-token ${index===focusIndex?"active":""}" role="button" tabindex="0" aria-label="${ui.focusAria(token.word)}" onclick="selectAttention(${index})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectAttention(${index})}">
         <rect x="${x-w/2}" y="${y}" width="${w}" height="64" rx="8" fill="${token.color}"></rect>
         <text x="${x}" y="${y+39}" text-anchor="middle" fill="#071017" font-size="24" font-weight="950">${token.word}</text>
       </g>
     `;
   }).join("");
   canvas.innerHTML=`
-    <svg class="attention-svg" viewBox="0 0 760 360" role="img" aria-label="Word relation lines for ${tokens[focusIndex].word}">
-      <text x="380" y="36" text-anchor="middle" fill="#8eaaa7" font-size="16" font-weight="800">Click a word to change the word-link focus.</text>
-      <text x="380" y="62" text-anchor="middle" fill="#c7dad7" font-size="13">Thicker line = stronger relationship.</text>
+    <svg class="attention-svg" viewBox="0 0 760 360" role="img" aria-label="${ui.attentionSvgAria(tokens[focusIndex].word)}">
+      <text x="380" y="36" text-anchor="middle" fill="#8eaaa7" font-size="16" font-weight="800">${ui.attentionHelp}</text>
+      <text x="380" y="62" text-anchor="middle" fill="#c7dad7" font-size="13">${ui.attentionSubhelp}</text>
       ${lines}
       ${tokenNodes}
-      <text x="${focusX}" y="333" text-anchor="middle" fill="#c9dbd8" font-size="14">focus word</text>
+      <text x="${focusX}" y="333" text-anchor="middle" fill="#c9dbd8" font-size="14">${ui.focusWordLabel}</text>
     </svg>
   `;
   if(label){
-    label.innerHTML=`<strong>${tokens[focusIndex].word}</strong>: ${relation.label}`;
+    label.innerHTML=ui.attentionLabel(tokens[focusIndex].word,relation.label);
   }
 }
 
 function renderOutput(root){
-  const choices=[
-    {word:"Paris",percent:92,color:"#ffb545"},
-    {word:"Lyon",percent:3,color:"#55a7ff"},
-    {word:"Marseille",percent:2,color:"#b685ff"},
-    {word:"Berlin",percent:1,color:"#28d7bd"},
-    {word:"the",percent:1,color:"#ff6f91"}
-  ];
+  const choices=ui.outputChoices;
   root.innerHTML=`
     <div class="probabilities">
       ${choices.map((choice,index)=>`
@@ -1230,7 +1332,7 @@ function renderOutput(root){
           <div class="percent">${choice.percent}%</div>
         </div>
       `).join("")}
-      <div class="winner">“Paris” is most likely, so the model adds it next.</div>
+      <div class="winner">${ui.outputWinner}</div>
     </div>
   `;
 }
@@ -1238,12 +1340,12 @@ function renderOutput(root){
 function renderLoop(root){
   root.innerHTML=`
     <div class="chat-demo">
-      <div class="chat-window" aria-label="Chat generation loop">
+      <div class="chat-window" aria-label="${ui.chatLoopAria}">
         <div class="chat-row user">
-          <div class="chat-bubble">Hey, how are you?</div>
+          <div class="chat-bubble">${ui.loopPrompt}</div>
         </div>
         <div class="chat-row ai">
-          <div class="chat-bubble" id="assistantReply">...</div>
+          <div class="chat-bubble" id="assistantReply">${ui.chatWaiting}</div>
         </div>
       </div>
       <div class="pipeline-list" id="pipelineList"></div>
@@ -1253,8 +1355,8 @@ function renderLoop(root){
 }
 
 function animateChatLoop(){
-  const prompt="Hey, how are you?";
-  const generated=["Hi,","I'm","good.","How","are","you?"];
+  const prompt=ui.loopPrompt;
+  const generated=ui.loopGenerated;
   const reply=document.getElementById("assistantReply");
   const list=document.getElementById("pipelineList");
   let words=[];
@@ -1264,16 +1366,9 @@ function animateChatLoop(){
       const pass=document.createElement("div");
       pass.className="pipeline-pass";
       pass.innerHTML=`
-        <div class="pipeline-context"><strong>Pass ${index+1} context:</strong> ${context}</div>
+        <div class="pipeline-context">${ui.passContext(index+1,context)}</div>
         <div class="mini-pipeline">
-          <span class="pipe-step">1 split words</span>
-          <span class="pipe-arrow">→</span>
-          <span class="pipe-step">2 word meaning</span>
-          <span class="pipe-arrow">→</span>
-          <span class="pipe-step">3 word links</span>
-          <span class="pipe-arrow">→</span>
-          <span class="pipe-step">4 next word</span>
-          <span class="pipe-arrow">→</span>
+          ${ui.pipeSteps.map(step=>`<span class="pipe-step">${step}</span><span class="pipe-arrow">→</span>`).join("")}
           <span class="generated-token">${word}</span>
         </div>
       `;
